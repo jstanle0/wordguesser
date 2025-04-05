@@ -4,10 +4,11 @@ import { Character } from "./char";
 
 export function Play() {
     const navigate = useNavigate();
-    const [selectedWord, setSelectedWord] = React.useState([])
-    const [guessedCharacters, setGuessedCharacters] = React.useState([])
+    const [selectedWord, setSelectedWord] = React.useState([]);
+    const [guessedCharacters, setGuessedCharacters] = React.useState([]);
     const [currentGuess, setCurrentGuess] = React.useState('');
     const [displayError, setDisplayError] = React.useState('');
+    const [incorrectGuesses, setIncorrectGuesses] = React.useState([]);
 
     const getRandomWord = async ()=>{
         //Fetch a random word from api.
@@ -44,19 +45,41 @@ export function Play() {
         return renderedWord;
     }
 
+    function renderIncorrectGuesses() {
+        //Renders incorrect guessed characters
+        let renderedGuesses = ''
+        for (const character of incorrectGuesses) {
+            renderedGuesses += character + " "
+        }
+        return renderedGuesses
+    }
+
     function guessLetter(e) {
+        //Recives user input, parses if it is valid
         e.preventDefault();
         if (/^[A-Z]$/.test(currentGuess)) {
-            guessedCharacters.push(currentGuess.toLowerCase())
-            setCurrentGuess('');
-            setDisplayError('');
+            parseLetter(currentGuess.toLowerCase())
         } else if (/^[a-z]$/.test(currentGuess)) {
-            guessedCharacters.push(currentGuess)
-            setCurrentGuess('');
-            setDisplayError('');
+            parseLetter(currentGuess)
         } else {
             setDisplayError("Only single letters accepted!")
         }
+    }
+
+    function parseLetter(letter) {
+        if (guessedCharacters.includes(letter)) {
+            setDisplayError("This letter is already guessed.");
+            return
+        }
+        guessedCharacters.push(letter);
+        if (!selectedWord.includes(letter)) {
+            incorrectGuesses.push(letter);
+            if (incorrectGuesses.length > 7) {
+                navigate('/lose')
+            } 
+        }
+        setCurrentGuess('');
+        setDisplayError('');
     }
 
     return <main>
@@ -67,5 +90,7 @@ export function Play() {
             <button type="submit">Guess!</button>
             {displayError && <p>Error: {displayError}</p>}
         </form>
+        <p>Incorrect Guesses (Limit 7)</p>
+        <h1>{renderIncorrectGuesses()}</h1>
     </main>
 }
