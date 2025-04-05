@@ -6,16 +6,21 @@ export function Play() {
     const navigate = useNavigate();
     const [selectedWord, setSelectedWord] = React.useState([])
     const [guessedCharacters, setGuessedCharacters] = React.useState([])
+    const [currentGuess, setCurrentGuess] = React.useState('');
+    const [displayError, setDisplayError] = React.useState('');
 
     const getRandomWord = async ()=>{
-        const response = await fetch('https://random-word-api.herokuapp.com/word?lang=en&length=6')
+        //Fetch a random word from api.
+        //TODO add vaiable word lengths
+        //TODO review documentation, some of the words look like other languages
+        const response = await fetch('https://random-word-api.herokuapp.com/word?lang=en&length=6');
         if (response.ok) {
-            const body = await response.json()
-            let wordList = []
+            const body = await response.json();
+            let wordList = [];
             for (const character of body[0]) {
-                wordList.push(character)
+                wordList.push(character);
             }
-            setSelectedWord(wordList)
+            setSelectedWord(wordList);
         }
     }
     React.useEffect(()=>{
@@ -23,21 +28,44 @@ export function Play() {
     }, [])
 
     function renderWord() {
-        let renderedWord = []
+        //Display guessed characters, with ungessed characters as "_" 
+        //TODO more efficent rendering function that requires less iteration
+        let renderedWord = [];
         for (const character of selectedWord) {
             if (guessedCharacters.includes(character)) {
-                renderedWord.push(character + " ")
+                renderedWord.push(character + " ");
             } else {
-                renderedWord.push("_ ")
+                renderedWord.push("_ ");
             }
+        };
+        if (!renderedWord) {
+            return "Loading..."
         }
-        return renderedWord
+        return renderedWord;
+    }
+
+    function guessLetter(e) {
+        e.preventDefault();
+        if (/^[A-Z]$/.test(currentGuess)) {
+            guessedCharacters.push(currentGuess.toLowerCase())
+            setCurrentGuess('');
+            setDisplayError('');
+        } else if (/^[a-z]$/.test(currentGuess)) {
+            guessedCharacters.push(currentGuess)
+            setCurrentGuess('');
+            setDisplayError('');
+        } else {
+            setDisplayError("Only single letters accepted!")
+        }
     }
 
     return <main>
         <h1>{renderWord()}</h1>
         <h1>{selectedWord}</h1>
-        <button onClick={()=>navigate('/win')}>Win</button>
-        <button onClick={()=>navigate('/lose')}>Lose</button>
+        <form onSubmit={(e)=>guessLetter(e)}>
+            <input type="text" placeholder="Guess a letter!" value={currentGuess} onChange={(e)=>setCurrentGuess(e.target.value)}></input>
+            <button type="submit">Guess!</button>
+            {displayError && <p>Error: {displayError}</p>}
+        </form>
     </main>
 }
