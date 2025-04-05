@@ -7,7 +7,7 @@ function Home() {
     const navigate = useNavigate()
     return <main>
     <h1>Welcome to Word Guesser!</h1>
-    <button onClick={()=>navigate('/play')}>Play!</button>
+    <button onClick={()=>navigate('/home')}>Play!</button>
     </main>
 }
 
@@ -35,7 +35,7 @@ function App() {
     return <BrowserRouter>
         <Routes>
             <Route path="/" element={<Home/>} exact/>
-            <Route path="/play" element={<Play/>}/>
+            <Route path="/home" element={<Play/>}/>
             <Route path="/win" element={<Win/>}/>
             <Route path="/lose" element={<Lose/>}/>
         </Routes>
