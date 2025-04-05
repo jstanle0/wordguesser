@@ -29,18 +29,23 @@ export function Play() {
     }, [])
 
     function renderWord() {
-        //Display guessed characters, with ungessed characters as "_" 
+        //Display guessed characters, with unguessed characters as "_", checks win condition
         //TODO more efficent rendering function that requires less iteration
         let renderedWord = [];
+        let wordFinished = true;
         for (const character of selectedWord) {
             if (guessedCharacters.includes(character)) {
                 renderedWord.push(character + " ");
             } else {
                 renderedWord.push("_ ");
+                wordFinished = false;
             }
         };
         if (!renderedWord) {
             return "Loading..."
+        }
+        if (wordFinished) {
+            navigate('/win')
         }
         return renderedWord;
     }
@@ -67,6 +72,7 @@ export function Play() {
     }
 
     function parseLetter(letter) {
+        //Processes letter that has been guessed. Sets lose condition.
         if (guessedCharacters.includes(letter)) {
             setDisplayError("This letter is already guessed.");
             return
