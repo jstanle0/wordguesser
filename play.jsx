@@ -1,10 +1,11 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Character } from "./char";
+import { wordContext } from ".";
 
 export function Play() {
     const navigate = useNavigate();
-    const [selectedWord, setSelectedWord] = React.useState([]);
+    const {selectedWord, setSelectedWord} = React.useContext(wordContext);
     const [guessedCharacters, setGuessedCharacters] = React.useState([]);
     const [currentGuess, setCurrentGuess] = React.useState('');
     const [displayError, setDisplayError] = React.useState('');
