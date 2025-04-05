@@ -4,12 +4,19 @@ import { BrowserRouter, Route, Routes, useNavigate } from "react-router-dom";
 import { Play } from "./play";
 import './main.css';
 
-export const wordContext = React.createContext(null)
+export const wordContext = React.createContext(null);
+export const wordLengthContext = React.createContext(null);
 
-function Home() {
+function Main() {
+    const {wordLength, setWordLength} = React.useContext(wordLengthContext)
     const navigate = useNavigate()
     return <main>
     <h1>Welcome to Word Guesser!</h1>
+    <p>Select word length:</p>
+    <div class="word-count-container">
+        <input type="range" value={wordLength} onChange={(e)=>{setWordLength(e.target.value)}} min='2' max='12'></input> 
+        <p>{wordLength}</p>
+    </div>
     <button className="btn-lrg" onClick={()=>navigate('/home')}>Play!</button>
     </main>
 }
@@ -40,17 +47,20 @@ function Lose() {
 }
 
 function App() {
-    const [selectedWord, setSelectedWord] = React.useState('')
+    const [selectedWord, setSelectedWord] = React.useState('');
+    const [wordLength, setWordLength] = React.useState(6);
 
     return <BrowserRouter>
         <header></header>
         <wordContext.Provider value={{selectedWord: selectedWord, setSelectedWord: setSelectedWord}}>
-            <Routes>
-                <Route path="/" element={<Home/>} exact/>
-                <Route path="/home" element={<Play/>}/>
-                <Route path="/win" element={<Win/>}/>
-                <Route path="/lose" element={<Lose/>}/>
-            </Routes>
+            <wordLengthContext.Provider value={{wordLength: wordLength, setWordLength: setWordLength}}>
+                <Routes>
+                    <Route path="/" element={<Main/>} exact/>
+                    <Route path="/home" element={<Play/>}/>
+                    <Route path="/win" element={<Win/>}/>
+                    <Route path="/lose" element={<Lose/>}/>
+                </Routes>
+            </wordLengthContext.Provider>
         </wordContext.Provider>
         <footer></footer>
     </BrowserRouter>

@@ -54,3 +54,6 @@ p {
 form {
     flex: none;
 }
+.word-count-container {
+    display: flex;
+}

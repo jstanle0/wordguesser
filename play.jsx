@@ -1,11 +1,12 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Character } from "./char";
-import { wordContext } from ".";
+import { wordContext, wordLengthContext } from ".";
 
 export function Play() {
     const navigate = useNavigate();
     const {selectedWord, setSelectedWord} = React.useContext(wordContext);
+    const {wordLength, setWordLength} = React.useContext(wordLengthContext);
     const [guessedCharacters, setGuessedCharacters] = React.useState([]);
     const [currentGuess, setCurrentGuess] = React.useState('');
     const [displayError, setDisplayError] = React.useState('');
@@ -15,7 +16,7 @@ export function Play() {
         //Fetch a random word from api.
         //TODO add vaiable word lengths
         //TODO review documentation, some of the words look like other languages
-        const response = await fetch('https://random-word-api.herokuapp.com/word?lang=en&length=6');
+        const response = await fetch(`https://random-word-api.herokuapp.com/word?lang=en&length=${wordLength}`);
         if (response.ok) {
             const body = await response.json();
             let wordList = [];
@@ -68,7 +69,7 @@ export function Play() {
         } else if (/^[a-z]$/.test(currentGuess)) {
             parseLetter(currentGuess)
         } else {
-            setDisplayError("Only single letters accepted!")
+            setDisplayError("Only single letters accepted.")
         }
     }
 
@@ -95,8 +96,8 @@ export function Play() {
         <form onSubmit={(e)=>guessLetter(e)}>
             <input type="text" placeholder="Guess a letter!" value={currentGuess} onChange={(e)=>setCurrentGuess(e.target.value)}></input>
             <button type="submit">Guess!</button>
-            {displayError && <p>Error: {displayError}</p>}
         </form>
+        {displayError && <p>Error: {displayError}</p>}
         <p>Incorrect Guesses (Limit 7)</p>
         <h1>{renderIncorrectGuesses()}</h1>
     </main>
