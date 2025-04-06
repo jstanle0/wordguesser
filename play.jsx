@@ -1,6 +1,5 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { Character } from "./char";
 import { wordContext, wordLengthContext } from ".";
 
 export function Play() {
@@ -92,7 +91,6 @@ export function Play() {
 
     return <main>
         <h1>{renderWord()}</h1>
-        <h1>{selectedWord}</h1>
         <form onSubmit={(e)=>guessLetter(e)}>
             <input type="text" placeholder="Guess a letter!" value={currentGuess} onChange={(e)=>setCurrentGuess(e.target.value)}></input>
             <button type="submit">Guess!</button>
