@@ -1,5 +1,1 @@
-<<<<<<< HEAD
-dasfegeagfearrdsahfiejafklejaf
-=======
-dafeafeagedsahfiejafklejaf
->>>>>>> bb8628d (edist)
+I like this text better.
